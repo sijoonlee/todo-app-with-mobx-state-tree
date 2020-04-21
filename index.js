@@ -1,7 +1,7 @@
 import { types, getSnapshot, onSnapshot } from "mobx-state-tree";
 import { render } from "react-dom";
 import { observer } from "mobx-react";
-import { values } from "mobx";
+import { observable, computed, values, autorun } from "mobx";
 import React, {useRef} from "react";
 
 
@@ -133,4 +133,28 @@ store.addTodo(1, "eating")
 store.addTodo(2, "drinking")
 onSnapshot(store, snapshot => console.log(snapshot));
 
+
+
+class Cart{
+  @observable noItems;
+
+  constructor()
+  {
+    this.noItems = 0;
+    autorun(()=>{
+      console.log(this.noItems);
+    })
+  }
+  @computed get getNoItems(){
+    console.log(this.noItems);
+    return this.noItems;
+  }
+}
+
+const myCart = new Cart();
+
+myCart.noItems += 1;
+
 render(<AppView store={store}/>, document.getElementById("root"));
+
+
