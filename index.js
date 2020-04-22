@@ -1,7 +1,7 @@
-import { types, getSnapshot, onSnapshot } from "mobx-state-tree";
+import { types, getSnapshot, onSnapshot, onPatch, onAction, addMiddleware } from "mobx-state-tree";
 import { render } from "react-dom";
 import { observer } from "mobx-react";
-import { observable, computed, values, autorun } from "mobx";
+import { observable, computed, values, autorun, action, reaction } from "mobx";
 import React, {useRef} from "react";
 
 
@@ -131,29 +131,21 @@ const AppView = observer( props => {
 
 store.addTodo(1, "eating")
 store.addTodo(2, "drinking")
-onSnapshot(store, snapshot => console.log(snapshot));
-
-
-
-class Cart{
-  @observable noItems;
-
-  constructor()
-  {
-    this.noItems = 0;
-    autorun(()=>{
-      console.log(this.noItems);
-    })
-  }
-  @computed get getNoItems(){
-    console.log(this.noItems);
-    return this.noItems;
-  }
-}
-
-const myCart = new Cart();
-
-myCart.noItems += 1;
+onSnapshot(store, snapshot => {
+  console.log("onSnapshot");
+  console.log(snapshot)});
+onPatch(store, patch => {
+  console.log("onPatch");
+  console.log(patch)});
+onAction(store, call => {
+  console.log("onAction")
+  console.log(call)});
+addMiddleware(store, (call, next) => {
+  console.log("Middleware ");
+  call.args[0] = call.args[0] + '-';
+  console.log(call);
+  return next(call);
+})
 
 render(<AppView store={store}/>, document.getElementById("root"));
 
