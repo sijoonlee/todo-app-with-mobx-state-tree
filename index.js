@@ -141,12 +141,15 @@ onAction(store, call => {
   console.log("onAction")
   console.log(call)});
 addMiddleware(store, (call, next) => {
-  console.log("Middleware ");
+  console.log("Middleware 1");
   call.args[0] = call.args[0] + '-';
   console.log(call);
   return next(call);
 })
-
+addMiddleware(store, (call, next) => {
+  console.log("Middleware 2");
+  call.args[0] = call.args[0] + '*';
+  console.log(call);
+  return next(call);
+})
 render(<AppView store={store}/>, document.getElementById("root"));
-
-
